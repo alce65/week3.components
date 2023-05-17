@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "jest --watchAll --coverage",
+    "test:prod": "jest --watchAll --collect-coverage --watchAll=false --passWithNoTests",
     "prepare": "husky install"
   },
   "devDependencies": {
