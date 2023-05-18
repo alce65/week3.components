@@ -13,7 +13,6 @@ export class Main extends Component {
   createTemplate() {
     return `
     <main>
-      <h2>Home page</h2>
     </main>
     `;
   }

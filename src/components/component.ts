@@ -13,13 +13,11 @@ export abstract class Component {
     if (!parentElement) throw new Error('Invalid selector');
     parentElement.insertAdjacentHTML(position, this.template);
     this.element = parentElement.lastElementChild!;
-    return this.element;
   }
 
-  cleanHtml(selector: string) {
-    this.element = document.querySelector(selector) as HTMLElement;
-    this.element.innerHTML = '';
-    return this.element;
+  cleanHtml() {
+    if (!this.element) return;
+    this.element.outerHTML = '';
   }
 }
 
