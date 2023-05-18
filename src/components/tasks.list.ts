@@ -1,22 +1,19 @@
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */
-import { getMockTasks } from '../data/mock.tasks';
+import { getTasks, setTasks } from '../data/local.repository';
 import { Task } from '../models/task';
 import { AddTask } from './add.task';
 import { Component } from './component';
 
-import './tasks.list.css';
+// TEMP import './tasks.list.css';
 
 export class TasksList extends Component {
   tasks: Task[];
   constructor(selector: string) {
     super(selector);
-    this.tasks = getMockTasks();
-    this.tasks[0].isCompleted = true;
-
+    this.tasks = getTasks();
     this.render();
     console.log(this.element);
-    console.log(this.tasks);
   }
 
   render(): void {
@@ -39,7 +36,7 @@ export class TasksList extends Component {
   handleDelete(event: Event): void {
     const element = event.target as HTMLSpanElement;
     this.tasks = this.tasks.filter((item) => item.id !== element.dataset.id);
-    console.log(this.tasks);
+    setTasks(this.tasks);
     this.render();
   }
 
@@ -51,13 +48,13 @@ export class TasksList extends Component {
         item.id === element.dataset.id ? !item.isCompleted : item.isCompleted;
       return item;
     });
-    console.log(this.tasks);
+    setTasks(this.tasks);
   }
 
   handleAdd(task: Task) {
     console.log(task);
     this.tasks.push(task);
-    console.log(this.tasks);
+    setTasks(this.tasks);
     this.render();
   }
 
