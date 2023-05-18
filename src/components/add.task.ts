@@ -30,7 +30,7 @@ export class AddTask extends Component {
 
   createTemplate() {
     return `
-      <form>
+      <form aria-label="form">
         <div>
           <label for="title">Titulo</label>
           <input type="text" name="title" id="title" required>
