@@ -19,6 +19,7 @@ export class AddTask extends Component {
     );
     console.log(task);
     this.handleAdd(task);
+    this.cleanHtml();
   }
 
   render(): void {

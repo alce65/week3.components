@@ -3,7 +3,7 @@
 ## Setup testing
 
 ```shell
-npm i -D @testing-library/dom @testing-library/user-event @testing-library/jest-dom
+npm i -D @testing-library/dom @testing-library/user-event @testing-library/jest-dom jest-environment-jsdom
 ```
 
 jest.config.js

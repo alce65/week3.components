@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */
+import { ApiRepository } from '../data/api.repository';
 import { getTasks, setTasks } from '../data/local.repository';
 import { Task } from '../models/task';
 import { AddTask } from './add.task';
@@ -9,11 +10,12 @@ import { Component } from './component';
 
 export class TasksList extends Component {
   tasks: Task[];
+  repo: ApiRepository;
   constructor(selector: string) {
     super(selector);
-    this.tasks = getTasks();
-    this.render();
-    console.log(this.element);
+    this.tasks = [];
+    this.repo = new ApiRepository();
+    this.handleLoad();
   }
 
   render(): void {
@@ -33,28 +35,39 @@ export class TasksList extends Component {
       );
   }
 
+  async handleLoad() {
+    this.tasks = await this.repo.getAll();
+    this.render();
+    console.log(this.element);
+  }
+
   handleDelete(event: Event): void {
     const element = event.target as HTMLSpanElement;
+    this.repo.delete(element.dataset.id as string);
     this.tasks = this.tasks.filter((item) => item.id !== element.dataset.id);
-    setTasks(this.tasks);
     this.render();
   }
 
   handleChange(event: Event): void {
     const element = event.target as HTMLSpanElement;
+    const id = element.dataset.id as string;
     console.log(element);
+    const changedTask = this.tasks.find((item) => item.id === id);
+    if (!changedTask) return;
+    this.repo.update(id, {
+      isCompleted: !changedTask.isCompleted,
+    });
+
     this.tasks = this.tasks.map((item) => {
-      item.isCompleted =
-        item.id === element.dataset.id ? !item.isCompleted : item.isCompleted;
+      item.isCompleted = item.id === id ? !item.isCompleted : item.isCompleted;
       return item;
     });
-    setTasks(this.tasks);
   }
 
-  handleAdd(task: Task) {
+  async handleAdd(task: Task) {
     console.log(task);
-    this.tasks.push(task);
-    setTasks(this.tasks);
+    const newTask = await this.repo.create(task);
+    this.tasks.push(newTask);
     this.render();
   }
 

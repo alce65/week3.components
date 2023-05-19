@@ -11,10 +11,9 @@ export class Task implements TaskStructure {
     return Math.trunc(Math.random() * 1_000_000_000_000).toString();
   }
 
-  id: string;
+  id!: string;
   isCompleted: boolean;
   constructor(public title: string, public owner: string) {
-    this.id = Task.generateID();
     this.isCompleted = false;
   }
 }
