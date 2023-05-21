@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Task } from '../models/task';
 import { Component } from './component';
 

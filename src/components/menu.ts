@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import './menu.css';
-import { MenuOptions } from '../types/menu.options';
+import type { MenuOptions } from '../types/menu.options';
 import { Component } from './component';
 
 export class Menu extends Component {

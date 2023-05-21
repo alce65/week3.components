@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-useless-constructor */
 export abstract class Component {
   template!: string;
   element!: Element;

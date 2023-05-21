@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export type TaskStructure = {
   id: string;
   title: string;
@@ -7,7 +6,7 @@ export type TaskStructure = {
 };
 
 export class Task implements TaskStructure {
-  static generateID() {
+  static generateId() {
     return Math.trunc(Math.random() * 1_000_000_000_000).toString();
   }
 

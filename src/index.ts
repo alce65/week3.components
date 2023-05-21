@@ -1,10 +1,9 @@
-/* eslint-disable no-new */
 import { Footer } from './components/footer';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import { Menu } from './components/menu';
 import { TasksList } from './components/tasks.list';
-import { MenuOptions } from './types/menu.options';
+import type { MenuOptions } from './types/menu.options';
 
 const menuOptions: MenuOptions = [
   { url: 'index.html', label: 'Home' },

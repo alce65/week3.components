@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import './main.css';
 import { Component } from './component';
 
