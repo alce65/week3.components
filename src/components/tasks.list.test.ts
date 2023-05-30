@@ -4,16 +4,22 @@
 import '@testing-library/jest-dom';
 import { TasksList } from './tasks.list';
 
-import { getTasks } from '../data/local.repository';
+// PREV import { getTasks } from '../data/local.repository';
+import type { ApiRepository } from '../data/api.repository';
+import type { Task } from '../models/task';
 
-jest.mock('../data/local.repository');
+// PREV jest.mock('../data/local.repository');
 
 describe('Given the component TasksList', () => {
-  (getTasks as jest.Mock).mockReturnValue([{ id: '', isCompleted: false }]);
+  // (getTasks as jest.Mock).mockReturnValue([{ id: '', isCompleted: false }]);
 
+  const repo: ApiRepository<Task> = {
+    getAll: jest.fn().mockResolvedValue([]),
+  } as unknown as ApiRepository<Task>;
   document.body.innerHTML = '<slot></slot>';
-  new TasksList('slot');
+  new TasksList('slot', repo);
   test('should ', () => {
-    expect(getTasks).toHaveBeenCalled();
+    // PREV expect(getTasks).toHaveBeenCalled();
+    expect(repo.getAll).toHaveBeenCalled();
   });
 });

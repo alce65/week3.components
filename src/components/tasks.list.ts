@@ -1,8 +1,5 @@
-/* eslint-disable no-new */
-/* eslint-disable no-unused-vars */
-import { ApiRepository } from '../data/api.repository';
-import { getTasks, setTasks } from '../data/local.repository';
-import { Task } from '../models/task';
+import type { ApiRepository } from '../data/api.repository';
+import type { Task } from '../models/task';
 import { AddTask } from './add.task';
 import { Component } from './component';
 
@@ -10,61 +7,69 @@ import { Component } from './component';
 
 export class TasksList extends Component {
   tasks: Task[];
-  repo: ApiRepository;
-  constructor(selector: string) {
+
+  constructor(selector: string, public repo: ApiRepository<Task>) {
     super(selector);
     this.tasks = [];
-    this.repo = new ApiRepository();
-    this.handleLoad();
+    void this.handleLoad();
   }
 
   render(): void {
     super.cleanHtml();
     this.template = this.createTemplate();
     super.render();
-    new AddTask('section.tasks', this.handleAdd.bind(this));
-    this.element
-      .querySelectorAll('i.button')
-      .forEach((item) =>
-        item.addEventListener('click', this.handleDelete.bind(this))
-      );
-    this.element
-      .querySelectorAll('input')
-      .forEach((item) =>
-        item.addEventListener('change', this.handleChange.bind(this))
-      );
+    new AddTask('div.add-tasks', this.handleAdd.bind(this));
+    this.element.querySelectorAll('i.button').forEach((item) => {
+      item.addEventListener('click', this.handleDelete.bind(this));
+    });
+    this.element.querySelectorAll('input').forEach((item) => {
+      item.addEventListener('change', this.handleChange.bind(this));
+    });
   }
 
-  async handleLoad() {
-    this.tasks = await this.repo.getAll();
+  async handleLoad(): Promise<void> {
+    try {
+      this.tasks = await this.repo.getAll();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error(error);
+      }
+    }
+
     this.render();
-    console.log(this.element);
+    console.log('TaskList', this.element);
   }
 
-  handleDelete(event: Event): void {
+  async handleDelete(event: Event): Promise<void> {
     const element = event.target as HTMLSpanElement;
-    this.repo.delete(element.dataset.id as string);
-    this.tasks = this.tasks.filter((item) => item.id !== element.dataset.id);
+    const id = element.dataset.id!;
+    await this.repo.delete(id);
+    this.tasks = this.tasks.filter((item) => Number(item.id) !== Number(id));
     this.render();
   }
 
-  handleChange(event: Event): void {
+  async handleChange(event: Event): Promise<void> {
     const element = event.target as HTMLSpanElement;
-    const id = element.dataset.id as string;
+    const id = element.dataset.id!;
     console.log(element);
-    const changedTask = this.tasks.find((item) => item.id === id);
+    const changedTask = this.tasks.find(
+      (item) => Number(item.id) === Number(id)
+    );
     if (!changedTask) return;
-    this.repo.update(id, {
+    await this.repo.update(id, {
       isCompleted: !changedTask.isCompleted,
     });
 
     this.tasks = this.tasks.map((item) => {
-      item.isCompleted = item.id === id ? !item.isCompleted : item.isCompleted;
+      item.isCompleted =
+        Number(item.id) === Number(id) ? !item.isCompleted : item.isCompleted;
       return item;
     });
   }
 
-  async handleAdd(task: Task) {
+  async handleAdd(task: Task): Promise<void> {
     console.log(task);
     const newTask = await this.repo.create(task);
     this.tasks.push(newTask);
@@ -87,7 +92,11 @@ export class TasksList extends Component {
       .join('');
 
     return `
+
+    <section class="tasks">
     <h2>Lista de tareas</h2>
-    <section class="tasks"></section><ul>${list}</ul>`;
+    <div class="add-tasks"></div>
+    <ul>${list}</ul>
+    </section>`;
   }
 }

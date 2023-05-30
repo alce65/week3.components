@@ -1,41 +1,41 @@
-import { Task } from '../models/task';
+export class ApiRepository<T extends { id: string | number }> {
+  constructor(public url: string) {}
 
-export class ApiRepository {
-  url: string;
-  constructor() {
-    this.url = 'http://localhost:3000/tasks/';
-  }
-
-  async getAll() {
+  async getAll(): Promise<T[]> {
     const response = await fetch(this.url);
-    return response.json();
+    if (!response.ok) {
+      const message = `Error: ${response.status}. ${response.statusText}`;
+      throw new Error(message);
+    }
+
+    return response.json() as Promise<T[]>;
   }
 
-  async get(id: Task['id']) {
-    const response = await fetch(this.url + id);
-    return response.json();
+  async get(id: T['id']): Promise<T> {
+    const response = await fetch(this.url + (id as string));
+    return response.json() as Promise<T>;
   }
 
-  async create(task: Partial<Task>) {
+  async create(item: Partial<T>): Promise<T> {
     const response = await fetch(this.url, {
       method: 'POST',
-      body: JSON.stringify(task),
+      body: JSON.stringify(item),
       headers: { 'Content-Type': 'application/json' },
     });
-    return response.json();
+    return response.json() as Promise<T>;
   }
 
-  async update(id: Task['id'], task: Partial<Task>) {
-    const response = await fetch(this.url + id, {
+  async update(id: T['id'], item: Partial<T>): Promise<T> {
+    const response = await fetch(this.url + (id as string), {
       method: 'PATCH',
-      body: JSON.stringify(task),
+      body: JSON.stringify(item),
       headers: { 'Content-Type': 'application/json' },
     });
-    return response.json();
+    return response.json() as Promise<T>;
   }
 
-  async delete(id: Task['id']) {
-    const response = await fetch(this.url + id, {
+  async delete(id: T['id']): Promise<boolean> {
+    const response = await fetch(this.url + (id as string), {
       method: 'DELETE',
     });
     return response.ok;
